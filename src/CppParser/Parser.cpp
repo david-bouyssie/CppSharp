@@ -4447,14 +4447,15 @@ ParserResult* Parser::ParseLibrary(const LinkerOptions* Opts)
 {
     auto res = new ParserResult();
 
-    for (const auto& Library : Opts->Libraries)
+    for (const auto& Lib : Opts->Libraries)
     {
-        if (Library.empty())
+        if (Lib.empty())
         {
             res->kind = ParserResultKind::FileNotFound;
             return res;
         }
 
+        std::string PrefixedLib = "lib" + Lib;
         std::string FileEntry;
 
         for (const auto& LibDir : Opts->LibraryDirs)
@@ -4467,9 +4468,12 @@ ParserResult* Parser::ParseLibrary(const LinkerOptions* Opts)
                  Dir != fs::directory_iterator() && !ErrorCode;
                  Dir = Dir.increment(ErrorCode))
             {
-                if (path::filename(File->path()) == Library ||
-                    path::stem(File->path()) == Library ||
-                    path::stem(path::stem(File->path())) == Library)
+                if (path::filename(File->path()) == Lib ||
+                    path::filename(File->path()) == PrefixedLib ||
+                    path::stem(File->path()) == Lib ||
+                    path::stem(File->path()) == PrefixedLib ||
+                    path::stem(path::stem(File->path())) == Lib ||
+                    path::stem(path::stem(File->path())) == PrefixedLib)
                 {
                     FileEntry = File->path();
                     goto found;
@@ -4495,14 +4499,14 @@ ParserResult* Parser::ParseLibrary(const LinkerOptions* Opts)
         auto OwningBinary = std::move(BinaryOrErr.get());
         auto Bin = OwningBinary.getBinary();
         if (auto Archive = llvm::dyn_cast<llvm::object::Archive>(Bin)) {
-            res->kind = ParseArchive(Library, Archive, res->Libraries);
+            res->kind = ParseArchive(Lib, Archive, res->Libraries);
             if (res->kind == ParserResultKind::Error)
                 return res;
         }
 
         if (auto ObjectFile = llvm::dyn_cast<llvm::object::ObjectFile>(Bin))
         {
-            res->kind = ParseSharedLib(Library, ObjectFile, res->Libraries);
+            res->kind = ParseSharedLib(Lib, ObjectFile, res->Libraries);
             if (res->kind == ParserResultKind::Error)
                 return res;
         }
