@@ -26,7 +26,7 @@ namespace CppSharp
             }
         }
 
-        public static string FindMonoPath(bool prefer64bits = false)
+        public static string FindMonoPath(bool prefer64bits = true)
         {
             if (Platform.IsWindows)
             {
@@ -36,7 +36,10 @@ namespace CppSharp
                    return path;
 
                 // If that fails, then lets try a default location.
-                return @"C:\Program Files (x86)\Mono";
+                if (prefer64bits)
+                    return @"C:\Program Files\Mono";
+                else
+                    return @"C:\Program Files (x86)\Mono";
             }
             else if (Platform.IsMacOS)
                 return "/Library/Frameworks/Mono.framework/Versions/Current";
