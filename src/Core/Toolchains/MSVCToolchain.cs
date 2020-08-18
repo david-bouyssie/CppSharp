@@ -140,6 +140,9 @@ namespace CppSharp
             if (match.Success)
                 kitsRootKey = match.Groups[0].Value;*/
 
+            windowsSdkMajorVer = 14;
+            kitsRootKey = "14.26.28801";
+
             List<ToolchainVersion> windowsKitsSdks = GetWindowsKitsSdks();
 
             var windowsKitSdk = (!string.IsNullOrWhiteSpace(kitsRootKey))
