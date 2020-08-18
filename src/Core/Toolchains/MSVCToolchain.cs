@@ -131,14 +131,14 @@ namespace CppSharp
             windowsSdkMajorVer = 0;
             string kitsRootKey = string.Empty;
 
-            var vcVarsFile = File.ReadAllText(vcVarsPath);
+            /*var vcVarsFile = File.ReadAllText(vcVarsPath);
             var match = Regex.Match(vcVarsFile, @"Windows\\v([1-9][0-9]*)\.?([0-9]*)");
             if (match.Success)
                 windowsSdkMajorVer = int.Parse(match.Groups[1].Value);
 
             match = Regex.Match(vcVarsFile, "KitsRoot([1-9][0-9]*)");
             if (match.Success)
-                kitsRootKey = match.Groups[0].Value;
+                kitsRootKey = match.Groups[0].Value;*/
 
             List<ToolchainVersion> windowsKitsSdks = GetWindowsKitsSdks();
 
